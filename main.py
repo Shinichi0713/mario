@@ -4,7 +4,7 @@ import pygame
 import pygame.display
 import sys, os
 import pygame.transform
-from object import Block
+from object import Block, Objects
 
 gravity = 0.5
 screen = pygame.display.set_mode((800, 600))
@@ -21,11 +21,13 @@ class Player(pygame.sprite.Sprite):
     def __init__(self, dir_image):
         super(Player, self).__init__()
         self.image = pygame.image.load(dir_image + "/stand.png")
+        self.size_image = (50, 50)  # マリオのサイズ
+        self.image = pygame.transform.scale(self.image, self.size_image)
         self.rect = self.image.get_rect()
 
         self.rect.x = 100   # マリオのx座標
         self.rect.y = 100   # マリオのy座標
-        self.size_image = (50, 50)  # マリオのサイズ
+        
         self.index_status = 0
         self.orientation = 1    # 1: 右向き, -1: 左向き
         self.run_images = [pygame.image.load(f'{dir_image}/run{i+1}.png') for i in range(0, 2)]
@@ -37,6 +39,8 @@ class Player(pygame.sprite.Sprite):
         self.velocity_y = 0 # y方向の速度
         self.acceleration_x = 0 # x方向の加速度
         self.acceleration_y = 0 # y方向の加速度
+
+        self.scaffold = False   # 足場にいるかどうか
 
     def update(self):
         global screen
@@ -57,7 +61,7 @@ class Player(pygame.sprite.Sprite):
             self.index_status = 1
         if self.orientation == -1:
             self.image = pygame.transform.flip(self.image, True, False)
-        
+        # self.rect = self.image.get_rect()
         self.__calculate_motion()
         screen.blit(self.image, self.rect)
         
@@ -72,21 +76,22 @@ class Player(pygame.sprite.Sprite):
 
 
 
-
 dir_current = os.path.dirname(__file__)
 player = Player(f"{dir_current}/image/mario")
-
+objects_operator = Objects()
 blocks = []
 for i in range(20):
-    block = Block(i*50, 500)
+    block = Block(i*50, 550)
     blocks.append(block)
 
 while True:
     screen.fill((0, 0, 0))
     event_main()
+    objects_operator.detect_collision(player, blocks)
     player.update()
     for block in blocks:
         block.update(screen)
+    
     pygame.display.flip()
     pygame.display.update()
 
