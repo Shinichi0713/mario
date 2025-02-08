@@ -39,7 +39,7 @@ class Player(pygame.sprite.Sprite):
         self.velocity_y = 0 # y方向の速度
         self.acceleration_x = 0 # x方向の加速度
         self.acceleration_y = 0 # y方向の加速度
-
+        self.velocity_x_limit = 5
         self.scaffold = False   # 足場にいるかどうか
 
     def update(self):
@@ -48,13 +48,20 @@ class Player(pygame.sprite.Sprite):
         if keys[pygame.K_RIGHT]:
             self.image = pygame.transform.scale(self.run_images[self.index_status] ,self.size_image)
             self.orientation = 1
+            self.acceleration_x = 0.02
         elif keys[pygame.K_LEFT]:
             self.image = pygame.transform.scale(self.run_images[self.index_status] ,self.size_image)
             self.orientation = -1
-        elif keys[pygame.K_SPACE]:
-            self.image = pygame.transform.scale(self.jump_images[self.index_status] ,self.size_image)
+            self.acceleration_x = -0.02
         else:
             self.image = pygame.transform.scale(self.stand_images[self.index_status] ,self.size_image)
+            self.acceleration_x = 0
+        if keys[pygame.K_SPACE]:
+            if self.scaffold:
+                self.velocity_y = -10
+                self.scaffold = False
+            self.image = pygame.transform.scale(self.jump_images[self.index_status] ,self.size_image)
+        
         if self.index_status == 1:
             self.index_status = 0
         else:
@@ -67,11 +74,17 @@ class Player(pygame.sprite.Sprite):
         
 
     def __calculate_motion(self):
-
+        
         self.velocity_x += self.acceleration_x
+        if self.velocity_x > self.velocity_x_limit:
+            self.velocity_x = self.velocity_x_limit
+        elif self.velocity_x < -self.velocity_x_limit:
+            self.velocity_x = -self.velocity_x_limit
+        self.velocity_x *= 0.99
+
         self.velocity_y += self.acceleration_y + gravity
 
-        self.rect.x += self.velocity_x
+        self.rect.x += int(self.velocity_x)
         self.rect.y += self.velocity_y
 
 
@@ -80,7 +93,7 @@ dir_current = os.path.dirname(__file__)
 player = Player(f"{dir_current}/image/mario")
 objects_operator = Objects()
 blocks = []
-for i in range(20):
+for i in range(50):
     block = Block(i*50, 550)
     blocks.append(block)
 
