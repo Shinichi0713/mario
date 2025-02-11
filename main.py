@@ -80,7 +80,8 @@ class Player(pygame.sprite.Sprite):
             self.velocity_x = self.velocity_x_limit
         elif self.velocity_x < -self.velocity_x_limit:
             self.velocity_x = -self.velocity_x_limit
-        self.velocity_x *= 0.99
+        if self.scaffold:
+            self.velocity_x *= 0.99
         self.velocity_y += self.acceleration_y + gravity
 
         self.rect.x += int(self.velocity_x)
