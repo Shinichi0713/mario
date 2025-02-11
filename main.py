@@ -6,7 +6,7 @@ import sys, os
 import pygame.transform
 from object import Block, Objects
 
-gravity = 0.2
+gravity = 0.1
 screen = pygame.display.set_mode((800, 600))
 
 
@@ -39,7 +39,7 @@ class Player(pygame.sprite.Sprite):
         self.velocity_y = 0 # y方向の速度
         self.acceleration_x = 0 # x方向の加速度
         self.acceleration_y = 0 # y方向の加速度
-        self.velocity_x_limit = 6
+        self.velocity_x_limit = 10
         self.scaffold = False   # 足場にいるかどうか
 
     def update(self):
@@ -86,15 +86,27 @@ class Player(pygame.sprite.Sprite):
         self.rect.x += int(self.velocity_x)
         self.rect.y += self.velocity_y
 
+def create_stage(filename):
+    if os.path.exists(filename):
+        with open(filename, 'r') as file:
+            stage_data = file.readlines()
+        return [line.strip() for line in stage_data]
+
+def draw_stage(filename):
+    stage_data = create_stage(filename)
+    blocks = []
+    for y, row in enumerate(stage_data):
+        for x, col in enumerate(row):
+            if col == "#":
+                block = Block(x*50, y*50)
+                blocks.append(block)
+    return blocks
 
 # Function to draw everything  
 def draw_window(player, objects):  
     screen.fill((0, 120, 120))
     camera_x = player.rect.x - screen.get_width() // 2 + player.size_image[0] // 2  
     camera_y = player.rect.y - screen.get_height() // 2 + player.size_image[1] // 2
-    # Draw the player (with camera offset)  
-    # player.rect.x = player.rect.x - camera_x
-    # player.rect.y = player.rect.y - camera_y
     screen.blit(player.image, (player.rect.x - camera_x, player.rect.y - camera_y)) 
     for object_calc in objects:
         screen.blit(object_calc.image, (object_calc.rect.x - camera_x, object_calc.rect.y - camera_y))
@@ -103,19 +115,8 @@ def draw_window(player, objects):
 dir_current = os.path.dirname(__file__)
 player = Player(f"{dir_current}/image/mario")
 objects_operator = Objects()
-blocks = []
-for i in range(5):
-    block = Block(i*50, 550)
-    blocks.append(block)
-for i in range(5):
-    block = Block(i*50+250, 500)
-    blocks.append(block)
-for i in range(5):
-    block = Block(i*50+500, 450)
-    blocks.append(block)
-for i in range(20):
-    block = Block(i*50+750, 450)
-    blocks.append(block)
+blocks = draw_stage(f"{dir_current}/stage/2-stage.txt")
+
 while True:
     screen.fill((0, 120, 120))
     event_main()
