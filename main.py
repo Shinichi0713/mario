@@ -5,6 +5,7 @@ import pygame.display
 import sys, os
 import pygame.transform
 from object import Block, Objects
+from character import Goomba
 
 gravity = 0.1
 screen = pygame.display.set_mode((800, 600))
