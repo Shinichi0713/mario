@@ -1,6 +1,6 @@
 
 
-import pygame
+import pygame　
 import pygame.display
 import sys, os
 import pygame.transform
