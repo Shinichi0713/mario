@@ -10,7 +10,7 @@ class MemoryGame:
         self.first = None
         self.second = None
         self.matches = 0
-        self.grid_size = 6
+        self.grid_size = 4
         self.total_pairs = (self.grid_size * self.grid_size) // 2
         self.create_board()
 
