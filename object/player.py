@@ -74,3 +74,5 @@ class Player(pygame.sprite.Sprite):
 
         self.rect.x += int(self.velocity_x)
         self.rect.y += self.velocity_y
+
+
