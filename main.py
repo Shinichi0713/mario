@@ -20,7 +20,6 @@ def event_main():
             sys.exit()
 
 
-
 def read_stage(filename):
     if os.path.exists(filename):
         with open(filename, 'r') as file:
