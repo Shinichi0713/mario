@@ -48,6 +48,7 @@ def draw_window(player, objects):
 
 dir_current = os.path.dirname(__file__)
 player = Player(f"{dir_current}/image/mario")
+# player = Player()
 objects_operator = Objects()
 blocks = draw_stage(f"{dir_current}/stage/2-stage.txt")
 # pygame.mixer.music.play()
